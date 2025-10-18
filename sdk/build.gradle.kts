@@ -5,6 +5,11 @@ plugins {
     alias(libs.plugins.kotlin)
     alias(libs.plugins.serialization)
     alias(libs.plugins.ktlint)
+    application
+}
+
+application {
+    mainClass = "friendly.sdk.MainKt"
 }
 
 group = "me.y9san9.friendly"
@@ -19,11 +24,16 @@ kotlin {
         extraWarnings = true
         allWarningsAsErrors = true
         progressiveMode = true
+        freeCompilerArgs.add("-Xconsistent-data-class-copy-visibility")
     }
 }
 
 dependencies {
     implementation(libs.slf4j.simple)
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.client.serialization.json)
 }
 
 mavenPublishing {
