@@ -21,8 +21,9 @@ public class FriendlyAuthClient(
 
     @Serializable
     private data class GenerateResponse(
-        val userId: UserIdSerializable,
         val token: TokenSerializable,
+        val id: UserIdSerializable,
+        val accessHash: UserAccessHashSerializable,
     )
 
     public suspend fun generate(
@@ -51,7 +52,8 @@ public class FriendlyAuthClient(
 
     private fun GenerateResponse.toAuthorization(): Authorization =
         Authorization(
-            userId = userId.typed(),
+            id = id.typed(),
+            accessHash = accessHash.typed(),
             token = token.typed(),
         )
 }
