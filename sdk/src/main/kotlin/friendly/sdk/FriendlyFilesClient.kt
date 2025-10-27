@@ -40,9 +40,7 @@ public class FriendlyFilesClient(
         bodyBuilder: Sink.() -> Unit,
     ): FileDescriptor {
         val endpoint = endpoint / "upload"
-
         val response = httpClient.post(endpoint.string) {
-            header("CF-Connecting-IP", "1.1.1.1")
             setBody(
                 MultiPartFormDataContent(
                     formData {
