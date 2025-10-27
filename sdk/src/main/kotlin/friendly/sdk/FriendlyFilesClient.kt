@@ -7,7 +7,6 @@ import io.ktor.client.plugins.onUpload
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.append
 import io.ktor.client.request.forms.formData
-import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
