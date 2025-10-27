@@ -15,4 +15,7 @@ dependencyResolutionManagement {
     }
 }
 
-include("sdk")
+include(
+    "sdk",
+    "examples",
+)

@@ -9,9 +9,11 @@ import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
 
 public class FriendlyAuthClient(
-    private val endpoint: FriendlyEndpoint,
+    endpoint: FriendlyEndpoint,
     private val httpClient: HttpClient,
 ) {
+    private val endpoint: FriendlyEndpoint = endpoint / "auth"
+
     @Serializable
     private data class GenerateBody(
         val nickname: NicknameSerializable,
@@ -36,8 +38,9 @@ public class FriendlyAuthClient(
             description = description.serializable(),
             interests = interests.serializable(),
         )
+        val endpoint = endpoint / "generate"
         val response = httpClient
-            .post("${endpoint.string}/auth/generate") {
+            .post(endpoint.string) {
                 contentType(ContentType.Application.Json)
                 setBody(body)
             }
