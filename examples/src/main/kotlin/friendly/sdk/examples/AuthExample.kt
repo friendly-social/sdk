@@ -9,7 +9,7 @@ suspend fun authExample() {
         nickname = Nickname.orThrow("y9san9"),
         description = UserDescription.orThrow("Phronology Evangelist"),
         interests = listOf(
-            Interest.orThrow("Phronology"),
+            Interest.orThrow("phronology"),
         ),
     )
     println(authorization)
