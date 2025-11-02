@@ -8,4 +8,5 @@ suspend fun main() {
     // authExample()
     // filesExample()
     // usersExample()
+    // friendsExample()
 }

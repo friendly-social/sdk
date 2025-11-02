@@ -4,7 +4,7 @@ import friendly.sdk.Interest
 import friendly.sdk.Nickname
 import friendly.sdk.UserDescription
 
-suspend fun usersExample() {
+suspend fun friendsExample() {
     println()
     val authorization1 = client.auth.generate(
         nickname = Nickname.orThrow("y9san9"),
@@ -16,9 +16,9 @@ suspend fun usersExample() {
     println("=== Authorization 1 ===")
     println(authorization1)
     println()
-    val user1Details = client.users.details(authorization1)
-    println("=== Self User Details ===")
-    println(user1Details)
+    val friendToken = client.friends.generate(authorization1)
+    println("=== Friend Token ===")
+    println(friendToken)
     println()
     val authorization2 = client.auth.generate(
         nickname = Nickname.orThrow("y9demn"),
@@ -30,12 +30,14 @@ suspend fun usersExample() {
     println("=== Authorization 2 ===")
     println(authorization2)
     println()
-    val user2Details = client.users.details(
-        authorization = authorization1,
-        id = authorization2.id,
-        accessHash = authorization2.accessHash,
-    )
-    println("=== Other User Details ===")
-    println(user2Details)
+    val addResultSuccess = client.friends
+        .add(authorization2, friendToken, authorization1.id)
+    println("=== Add Friend Success ===")
+    println(addResultSuccess)
+    println()
+    val addResultFailure = client.friends
+        .add(authorization2, friendToken, authorization1.id)
+    println("=== Add Friend Failure ===")
+    println(addResultFailure)
     println()
 }
