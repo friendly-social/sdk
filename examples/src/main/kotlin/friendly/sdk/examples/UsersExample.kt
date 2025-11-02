@@ -12,6 +12,7 @@ suspend fun usersExample() {
         interests = listOf(
             Interest.orThrow("phronology"),
         ),
+        avatar = null,
     )
     println("=== Authorization 1 ===")
     println(authorization1)
@@ -26,6 +27,7 @@ suspend fun usersExample() {
         interests = listOf(
             Interest.orThrow("zed"),
         ),
+        avatar = null,
     )
     println("=== Authorization 2 ===")
     println(authorization2)

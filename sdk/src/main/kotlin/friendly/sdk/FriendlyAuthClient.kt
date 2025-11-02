@@ -17,6 +17,7 @@ public class FriendlyAuthClient(
         val nickname: NicknameSerializable,
         val description: UserDescriptionSerializable,
         val interests: List<InterestSerializable>,
+        val avatar: FileDescriptorSerializable?,
     )
 
     @Serializable
@@ -30,11 +31,13 @@ public class FriendlyAuthClient(
         nickname: Nickname,
         description: UserDescription,
         interests: List<Interest>,
+        avatar: FileDescriptor?,
     ): Authorization {
         val body = GenerateBody(
             nickname = nickname.serializable(),
             description = description.serializable(),
             interests = interests.serializable(),
+            avatar = avatar?.serializable(),
         )
         val endpoint = endpoint / "generate"
         val response = httpClient

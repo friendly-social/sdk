@@ -11,6 +11,7 @@ suspend fun authExample() {
         interests = listOf(
             Interest.orThrow("phronology"),
         ),
+        avatar = null,
     )
     println(authorization)
 }

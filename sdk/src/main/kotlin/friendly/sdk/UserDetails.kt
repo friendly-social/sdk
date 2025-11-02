@@ -6,6 +6,7 @@ public data class UserDetails(
     val nickname: Nickname,
     val description: UserDescription,
     val interests: List<Interest>,
+    val avatar: FileDescriptor?,
 ) {
     public fun serializable(): UserDetailsSerializable =
         UserDetailsSerializable(
@@ -14,5 +15,6 @@ public data class UserDetails(
             nickname = nickname.serializable(),
             description = description.serializable(),
             interests = interests.serializable(),
+            avatar = avatar?.serializable(),
         )
 }
