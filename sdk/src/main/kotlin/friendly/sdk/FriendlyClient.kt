@@ -43,6 +43,11 @@ public class FriendlyClient(
         httpClient = this.httpClient,
     )
 
+    public val network: FriendlyNetworkClient = FriendlyNetworkClient(
+        endpoint = endpoint,
+        httpClient = this.httpClient,
+    )
+
     public companion object {
         public fun localhost(
             port: Int = 8080,
