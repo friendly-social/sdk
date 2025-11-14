@@ -7,9 +7,8 @@ public data class Nickname private constructor(val string: String) {
     public companion object {
         public val MaxLength: Int = 256
 
-        public fun validate(string: String): Boolean {
-            return string.length <= MaxLength
-        }
+        public fun validate(string: String): Boolean =
+            string.length <= MaxLength
 
         public fun orNull(string: String): Nickname? {
             if (validate(string)) return orThrow(string)
