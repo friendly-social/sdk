@@ -10,11 +10,40 @@ public class FriendlyFeedClient(
 ) {
     private val endpoint = endpoint / "feed"
 
-    public suspend fun queue(authorization: Authorization): FeedQueue {
+    public sealed interface QueueResult {
+        public fun orThrow(): FeedQueue
+
+        public data class IOError(val cause: Throwable?) : QueueResult {
+            override fun orThrow(): Nothing = error("$this")
+        }
+        public data object ServerError : QueueResult {
+            override fun orThrow(): Nothing = error("$this")
+        }
+        public data object Unauthorized : QueueResult {
+            override fun orThrow(): Nothing = error("$this")
+        }
+        public data class Success(val queue: FeedQueue) : QueueResult {
+            override fun orThrow(): FeedQueue = queue
+        }
+    }
+
+    public suspend fun queue(authorization: Authorization): QueueResult {
         val endpoint = endpoint / "queue"
-        val response = httpClient.get(endpoint.string) {
+        val request = httpClient.safeHttpRequest(endpoint.string) {
+            method = Get
             authorization(authorization)
-        }.body<FeedQueueSerializable>()
-        return response.typed()
+        }
+        val response = when (request) {
+            is IOError -> return QueueResult.IOError(request.cause)
+            is ServerError -> return QueueResult.ServerError
+            is Success -> request.response
+        }
+        val responseBody = when (response.status) {
+            Unauthorized -> return QueueResult.Unauthorized
+            OK -> response.body<FeedQueueSerializable>()
+            else -> error("Unknown status code")
+        }
+        val queue = responseBody.typed()
+        return QueueResult.Success(queue)
     }
 }

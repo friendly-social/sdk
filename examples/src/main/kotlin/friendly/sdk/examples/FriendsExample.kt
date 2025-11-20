@@ -13,11 +13,11 @@ suspend fun friendsExample() {
             Interest.orThrow("phronology"),
         ),
         avatar = null,
-    )
+    ).orThrow()
     println("=== Authorization 1 ===")
     println(authorization1)
     println()
-    val friendToken = client.friends.generate(authorization1)
+    val friendToken = client.friends.generate(authorization1).orThrow()
     println("=== Friend Token ===")
     println(friendToken)
     println()
@@ -28,17 +28,17 @@ suspend fun friendsExample() {
             Interest.orThrow("zed"),
         ),
         avatar = null,
-    )
+    ).orThrow()
     println("=== Authorization 2 ===")
     println(authorization2)
     println()
     val addResultSuccess = client.friends
-        .add(authorization2, friendToken, authorization1.id)
+        .add(authorization2, friendToken, authorization1.id).orThrow()
     println("=== Add Friend Success ===")
     println(addResultSuccess)
     println()
     val addResultFailure = client.friends
-        .add(authorization2, friendToken, authorization1.id)
+        .add(authorization2, friendToken, authorization1.id).orThrow()
     println("=== Add Friend Failure ===")
     println(addResultFailure)
     println()

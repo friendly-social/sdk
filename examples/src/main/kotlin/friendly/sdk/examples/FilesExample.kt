@@ -25,7 +25,7 @@ suspend fun filesExample() {
         fs.source(path)
             .buffered()
             .transferTo(this)
-    }
+    }.orThrow()
 
     val url = client.files.getEndpoint(fileDescriptor)
     println("File uploaded to: ${url.string}")

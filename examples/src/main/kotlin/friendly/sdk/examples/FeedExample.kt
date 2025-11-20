@@ -13,7 +13,7 @@ suspend fun feedExample() {
             Interest.orThrow("phronology"),
         ),
         avatar = null,
-    )
+    ).orThrow()
     println("=== Authorization 1 ===")
     println(authorization1)
     println()
@@ -24,7 +24,7 @@ suspend fun feedExample() {
             Interest.orThrow("zed"),
         ),
         avatar = null,
-    )
+    ).orThrow()
     println("=== Authorization 2 ===")
     println(authorization2)
     println()
@@ -35,7 +35,7 @@ suspend fun feedExample() {
             Interest.orThrow("python3+"),
         ),
         avatar = null,
-    )
+    ).orThrow()
     println("=== Authorization 3 ===")
     println(authorization3)
     println()
@@ -46,38 +46,41 @@ suspend fun feedExample() {
             Interest.orThrow("webring"),
         ),
         avatar = null,
-    )
+    ).orThrow()
     println("=== Authorization 4 ===")
     println(authorization4)
     println()
-    val friend1Token = client.friends.generate(authorization1)
+    val friend1Token = client.friends.generate(authorization1).orThrow()
     println("=== Friend 1 Token ===")
     println(friend1Token)
     println()
     val add1ResultSuccess = client.friends
         .add(authorization2, friend1Token, authorization1.id)
+        .orThrow()
     println("=== Add Friend 1 Success ===")
     println(add1ResultSuccess)
     println()
-    val friend2Token = client.friends.generate(authorization2)
+    val friend2Token = client.friends.generate(authorization2).orThrow()
     println("=== Friend 2 Token ===")
     println(friend1Token)
     println()
     val add2ResultSuccess = client.friends
         .add(authorization3, friend2Token, authorization2.id)
+        .orThrow()
     println("=== Add Friend 2 Success ===")
     println(add2ResultSuccess)
     println()
-    val friend3Token = client.friends.generate(authorization3)
+    val friend3Token = client.friends.generate(authorization3).orThrow()
     println("=== Friend 3 Token ===")
     println(friend2Token)
     println()
     val add3ResultSuccess = client.friends
         .add(authorization4, friend3Token, authorization3.id)
+        .orThrow()
     println("=== Add Friend 3 Success ===")
     println(add3ResultSuccess)
     println()
-    val network = client.feed.queue(authorization1)
+    val network = client.feed.queue(authorization1).orThrow()
     println("=== Feed ===")
     println(network.entries)
     println()

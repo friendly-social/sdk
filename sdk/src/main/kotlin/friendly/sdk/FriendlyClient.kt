@@ -20,7 +20,6 @@ public class FriendlyClient(
         defaultRequest {
             contentType(ContentType.Application.Json)
         }
-        expectSuccess = true
     }
 
     public val auth: FriendlyAuthClient = FriendlyAuthClient(

@@ -10,25 +10,64 @@ public class FriendlyUsersClient(
 ) {
     private val endpoint = endpoint / "users"
 
-    public suspend fun details(authorization: Authorization): UserDetails {
+    public sealed interface DetailsResult {
+        public fun orThrow(): UserDetails
+
+        public data class IOError(val cause: Throwable) : DetailsResult {
+            override fun orThrow(): Nothing = error("$this")
+        }
+        public data object ServerError : DetailsResult {
+            override fun orThrow(): Nothing = error("$this")
+        }
+        public data object Unauthorized : DetailsResult {
+            override fun orThrow(): Nothing = error("$this")
+        }
+        public data class Success(val details: UserDetails) : DetailsResult {
+            override fun orThrow(): UserDetails = details
+        }
+    }
+
+    public suspend fun details(authorization: Authorization): DetailsResult {
         val endpoint = endpoint / "details"
-        val request = httpClient.get(endpoint.string) {
+        val request = httpClient.safeHttpRequest(endpoint.string) {
+            method = Get
             authorization(authorization)
         }
-        val response = request.body<UserDetailsSerializable>()
-        return response.typed()
+        val response = when (request) {
+            is IOError -> return DetailsResult.IOError(request.cause)
+            is ServerError -> return DetailsResult.ServerError
+            is Success -> request.response
+        }
+        val responseBody = when (response.status) {
+            Unauthorized -> return DetailsResult.Unauthorized
+            OK -> response.body<UserDetailsSerializable>()
+            else -> error("Unknown status code")
+        }
+        val details = responseBody.typed()
+        return DetailsResult.Success(details)
     }
 
     public suspend fun details(
         authorization: Authorization,
         id: UserId,
         accessHash: UserAccessHash,
-    ): UserDetails {
+    ): DetailsResult {
         val endpoint = endpoint / "details" / "${id.long}" / accessHash.string
-        val request = httpClient.get(endpoint.string) {
+        val request = httpClient.safeHttpRequest(endpoint.string) {
+            method = Get
             authorization(authorization)
         }
-        val response = request.body<UserDetailsSerializable>()
-        return response.typed()
+        val response = when (request) {
+            is IOError -> return DetailsResult.IOError(request.cause)
+            is ServerError -> return DetailsResult.ServerError
+            is Success -> request.response
+        }
+        val responseBody = when (response.status) {
+            Unauthorized -> return DetailsResult.Unauthorized
+            OK -> response.body<UserDetailsSerializable>()
+            else -> error("Unknown status code")
+        }
+        val details = responseBody.typed()
+        return DetailsResult.Success(details)
     }
 }

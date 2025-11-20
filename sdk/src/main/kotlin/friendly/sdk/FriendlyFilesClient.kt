@@ -7,7 +7,6 @@ import io.ktor.client.plugins.onUpload
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.append
 import io.ktor.client.request.forms.formData
-import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import kotlinx.io.Sink
@@ -26,10 +25,25 @@ public class FriendlyFilesClient(
             descriptor.accessHash.string
 
     @Serializable
-    private data class UploadFileResponse(
+    private data class UploadFileResponseBody(
         val id: FileIdSerializable,
         val accessHash: FileAccessHashSerializable,
     )
+
+    public sealed interface UploadFileResult {
+        public fun orThrow(): FileDescriptor
+
+        public data class IOError(val cause: Throwable?) : UploadFileResult {
+            override fun orThrow(): Nothing = error("$this")
+        }
+        public data object ServerError : UploadFileResult {
+            override fun orThrow(): Nothing = error("$this")
+        }
+        public data class Success(val descriptor: FileDescriptor) :
+            UploadFileResult {
+            override fun orThrow(): FileDescriptor = descriptor
+        }
+    }
 
     public suspend fun upload(
         filename: String,
@@ -37,29 +51,39 @@ public class FriendlyFilesClient(
         size: Long? = null,
         onUpload: ProgressListener? = null,
         bodyBuilder: Sink.() -> Unit,
-    ): FileDescriptor {
+    ): UploadFileResult {
         val endpoint = endpoint / "upload"
-        val response = httpClient.post(endpoint.string) {
-            setBody(
-                MultiPartFormDataContent(
-                    formData {
-                        append(
-                            key = "file",
-                            filename = filename,
-                            contentType = contentType,
-                            size = size,
-                            bodyBuilder = bodyBuilder,
-                        )
-                    },
-                ),
-            )
+        val requestBody = MultiPartFormDataContent(
+            formData {
+                append(
+                    key = "file",
+                    filename = filename,
+                    contentType = contentType,
+                    size = size,
+                    bodyBuilder = bodyBuilder,
+                )
+            },
+        )
+        val request = httpClient.safeHttpRequest(endpoint.string) {
+            method = Post
+            setBody(requestBody)
             if (onUpload != null) {
                 onUpload(onUpload)
             }
-        }.body<UploadFileResponse>()
-        return response.typed()
+        }
+        val response = when (request) {
+            is IOError -> return UploadFileResult.IOError(request.cause)
+            is ServerError -> return UploadFileResult.ServerError
+            is Success -> request.response
+        }
+        val responseBody = when (response.status) {
+            OK -> response.body<UploadFileResponseBody>()
+            else -> error("Unknown status code")
+        }
+        val descriptor = responseBody.typed()
+        return UploadFileResult.Success(descriptor)
     }
 
-    private fun UploadFileResponse.typed() =
+    private fun UploadFileResponseBody.typed() =
         FileDescriptor(id.typed(), accessHash.typed())
 }

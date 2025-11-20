@@ -13,11 +13,11 @@ suspend fun usersExample() {
             Interest.orThrow("phronology"),
         ),
         avatar = null,
-    )
+    ).orThrow()
     println("=== Authorization 1 ===")
     println(authorization1)
     println()
-    val user1Details = client.users.details(authorization1)
+    val user1Details = client.users.details(authorization1).orThrow()
     println("=== Self User Details ===")
     println(user1Details)
     println()
@@ -28,7 +28,7 @@ suspend fun usersExample() {
             Interest.orThrow("zed"),
         ),
         avatar = null,
-    )
+    ).orThrow()
     println("=== Authorization 2 ===")
     println(authorization2)
     println()
@@ -36,7 +36,7 @@ suspend fun usersExample() {
         authorization = authorization1,
         id = authorization2.id,
         accessHash = authorization2.accessHash,
-    )
+    ).orThrow()
     println("=== Other User Details ===")
     println(user2Details)
     println()
