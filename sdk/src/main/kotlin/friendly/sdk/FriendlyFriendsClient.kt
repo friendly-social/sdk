@@ -110,8 +110,12 @@ public class FriendlyFriendsClient(
             is ServerError -> return AddResult.ServerError
             is Success -> request.response
         }
-            .body<AddResponseBody>()
-        return response.toResult()
+        val responseBody = when (response.status) {
+            OK -> response.body<AddResponseBody>()
+            Unauthorized -> return AddResult.Unauthorized
+            else -> error("Unknown status code")
+        }
+        return responseBody.toResult()
     }
 
     private fun AddResponseBody.toResult(): AddResult = when (this) {
