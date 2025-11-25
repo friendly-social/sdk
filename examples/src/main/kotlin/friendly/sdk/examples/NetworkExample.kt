@@ -87,28 +87,28 @@ suspend fun networkExample() {
     val (first, second) = feed.entries.map { entry -> entry.details }
     require(first.id == authorization3.id)
     require(second.id == authorization4.id)
-    client.connections.request(
+    client.friends.request(
         authorization = authorization1,
         userId = authorization3.id,
         userAccessHash = authorization3.accessHash,
     ).orThrow()
     println("=== Request Success ===")
     println()
-    client.connections.request(
+    client.friends.request(
         authorization = authorization3,
         userId = authorization1.id,
         userAccessHash = authorization1.accessHash,
     ).orThrow()
     println("=== Mutual Request Success ===")
     println()
-    client.connections.decline(
+    client.friends.decline(
         authorization = authorization1,
         userId = authorization4.id,
         userAccessHash = authorization4.accessHash,
     ).orThrow()
     println("=== Decline Success ===")
     println()
-    client.connections.request(
+    client.friends.request(
         authorization = authorization4,
         userId = authorization1.id,
         userAccessHash = authorization1.accessHash,
