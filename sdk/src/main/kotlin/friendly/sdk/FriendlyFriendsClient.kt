@@ -3,7 +3,6 @@ package friendly.sdk
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.setBody
-import kotlinx.io.IOException
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -19,7 +18,7 @@ public class FriendlyFriendsClient(
     public sealed interface GenerateResult {
         public fun orThrow(): FriendToken
 
-        public data class IOError(val cause: Throwable?) : GenerateResult {
+        public data class IOError(val cause: Exception) : GenerateResult {
             override fun orThrow(): Nothing = error("$this")
         }
         public data object ServerError : GenerateResult {
@@ -73,7 +72,7 @@ public class FriendlyFriendsClient(
     public sealed interface AddResult {
         public fun orThrow()
 
-        public data class IOError(val cause: IOException) : AddResult {
+        public data class IOError(val cause: Exception) : AddResult {
             override fun orThrow(): Nothing = error("$this")
         }
         public data object ServerError : AddResult {
@@ -135,7 +134,7 @@ public class FriendlyFriendsClient(
     public sealed interface RequestResult {
         public fun orThrow()
 
-        public data class IOError(val cause: IOException) : RequestResult {
+        public data class IOError(val cause: Exception) : RequestResult {
             override fun orThrow(): Nothing = error("$this")
         }
         public data object ServerError : RequestResult {
@@ -193,7 +192,7 @@ public class FriendlyFriendsClient(
     public sealed interface DeclineResult {
         public fun orThrow()
 
-        public data class IOError(val cause: IOException) : DeclineResult {
+        public data class IOError(val cause: Exception) : DeclineResult {
             override fun orThrow(): Nothing = error("$this")
         }
         public data object ServerError : DeclineResult {

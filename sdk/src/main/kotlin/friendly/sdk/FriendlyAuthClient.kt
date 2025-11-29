@@ -29,7 +29,7 @@ public class FriendlyAuthClient(
     public sealed interface GenerateResult {
         public fun orThrow(): Authorization
 
-        public data class IOError(val cause: Throwable?) : GenerateResult {
+        public data class IOError(val cause: Exception) : GenerateResult {
             override fun orThrow(): Nothing = error("$this")
         }
         public data object ServerError : GenerateResult {

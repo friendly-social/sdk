@@ -13,7 +13,7 @@ public class FriendlyNetworkClient(
     public sealed interface DetailsResult {
         public fun orThrow(): NetworkDetails
 
-        public data class IOError(val cause: Throwable?) : DetailsResult {
+        public data class IOError(val cause: Exception) : DetailsResult {
             override fun orThrow(): Nothing = error("$this")
         }
         public data object ServerError : DetailsResult {

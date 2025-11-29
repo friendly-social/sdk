@@ -13,7 +13,7 @@ public class FriendlyUsersClient(
     public sealed interface DetailsResult {
         public fun orThrow(): UserDetails
 
-        public data class IOError(val cause: Throwable) : DetailsResult {
+        public data class IOError(val cause: Exception) : DetailsResult {
             override fun orThrow(): Nothing = error("$this")
         }
         public data object ServerError : DetailsResult {

@@ -33,7 +33,7 @@ public class FriendlyFilesClient(
     public sealed interface UploadFileResult {
         public fun orThrow(): FileDescriptor
 
-        public data class IOError(val cause: Throwable?) : UploadFileResult {
+        public data class IOError(val cause: Exception) : UploadFileResult {
             override fun orThrow(): Nothing = error("$this")
         }
         public data object ServerError : UploadFileResult {

@@ -13,7 +13,7 @@ public class FriendlyFeedClient(
     public sealed interface QueueResult {
         public fun orThrow(): FeedQueue
 
-        public data class IOError(val cause: Throwable?) : QueueResult {
+        public data class IOError(val cause: Exception) : QueueResult {
             override fun orThrow(): Nothing = error("$this")
         }
         public data object ServerError : QueueResult {
