@@ -151,7 +151,7 @@ public class FriendlyFriendsClient(
         }
     }
 
-    public suspend fun request(
+    public suspend fun decline(
         authorization: Authorization,
         userId: UserId,
         userAccessHash: UserAccessHash,
@@ -209,13 +209,13 @@ public class FriendlyFriendsClient(
         }
     }
 
-    public suspend fun decline(
+    public suspend fun request(
         authorization: Authorization,
         userId: UserId,
         userAccessHash: UserAccessHash,
     ): RequestResult {
         val endpoint = endpoint / "decline"
-        val requestBody = DeclineRequestBody(
+        val requestBody = RequestRequestBody(
             userId = userId.serializable(),
             userAccessHash = userAccessHash.serializable(),
         )

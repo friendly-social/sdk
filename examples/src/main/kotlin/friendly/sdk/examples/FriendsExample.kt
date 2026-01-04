@@ -85,18 +85,20 @@ suspend fun friendsExample() {
     println(feed.entries)
     println()
     val (first, second) = feed.entries.map { entry -> entry.details }
-    client.friends.request(
+    val requestSuccess = client.friends.request(
         authorization = authorization1,
         userId = first.id,
         userAccessHash = first.accessHash,
     ).orThrow()
     println("=== Request Success ===")
+    println(requestSuccess)
     println()
-    client.friends.request(
+    val declineSuccess = client.friends.decline(
         authorization = authorization1,
         userId = second.id,
         userAccessHash = second.accessHash,
     ).orThrow()
     println("=== Decline Success ===")
+    println(declineSuccess)
     println()
 }
