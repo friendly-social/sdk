@@ -8,7 +8,7 @@ public data class Authorization(
     val token: Token,
 )
 
-public fun HttpRequestBuilder.authorization(authorization: Authorization) {
+internal fun HttpRequestBuilder.authorization(authorization: Authorization) {
     headers["X-User-Id"] = authorization.id.long.toString()
     headers["X-Token"] = authorization.token.string
 }

@@ -80,8 +80,22 @@ suspend fun feedExample() {
     println("=== Add Friend 3 Success ===")
     println(add3ResultSuccess)
     println()
-    val network = client.feed.queue(authorization1).orThrow()
-    println("=== Feed ===")
-    println(network.entries)
+    val network1 = client.feed.queue(authorization1).orThrow()
+    println("=== Feed Before ===")
+    println(network1.entries)
+    println()
+    val requestSuccess = client.friends
+        .request(
+            authorization = authorization1,
+            userId = network1.entries.first().details.id,
+            userAccessHash = network1.entries.first().details.accessHash,
+        )
+        .orThrow()
+    println("=== Request Success ===")
+    println(requestSuccess)
+    println()
+    val network2 = client.feed.queue(authorization1).orThrow()
+    println("=== Feed After ===")
+    println(network2.entries)
     println()
 }
