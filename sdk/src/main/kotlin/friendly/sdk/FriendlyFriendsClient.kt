@@ -156,7 +156,7 @@ public class FriendlyFriendsClient(
         userId: UserId,
         userAccessHash: UserAccessHash,
     ): DeclineResult {
-        val endpoint = endpoint / "request"
+        val endpoint = endpoint / "decline"
         val requestBody = DeclineRequestBody(
             userId = userId.serializable(),
             userAccessHash = userAccessHash.serializable(),
