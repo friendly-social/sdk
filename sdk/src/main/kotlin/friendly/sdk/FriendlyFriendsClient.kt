@@ -214,7 +214,7 @@ public class FriendlyFriendsClient(
         userId: UserId,
         userAccessHash: UserAccessHash,
     ): RequestResult {
-        val endpoint = endpoint / "decline"
+        val endpoint = endpoint / "request"
         val requestBody = RequestRequestBody(
             userId = userId.serializable(),
             userAccessHash = userAccessHash.serializable(),
