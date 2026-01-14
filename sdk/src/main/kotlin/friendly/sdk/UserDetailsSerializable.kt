@@ -10,6 +10,7 @@ public data class UserDetailsSerializable(
     val description: UserDescriptionSerializable,
     val interests: List<InterestSerializable>,
     val avatar: FileDescriptorSerializable?,
+    val socialLink: SocialLinkSerializable?,
 ) {
     public fun typed(): UserDetails = UserDetails(
         id = id.typed(),
@@ -18,5 +19,6 @@ public data class UserDetailsSerializable(
         description = description.typed(),
         interests = interests.typed(),
         avatar = avatar?.typed(),
+        socialLink = socialLink?.typed(),
     )
 }

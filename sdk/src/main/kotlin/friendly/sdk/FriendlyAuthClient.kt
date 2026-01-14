@@ -17,6 +17,7 @@ public class FriendlyAuthClient(
         val description: UserDescriptionSerializable,
         val interests: List<InterestSerializable>,
         val avatar: FileDescriptorSerializable?,
+        val socialLink: SocialLinkSerializable?,
     )
 
     @Serializable
@@ -46,6 +47,7 @@ public class FriendlyAuthClient(
         description: UserDescription,
         interests: List<Interest>,
         avatar: FileDescriptor?,
+        socialLink: SocialLink?,
     ): GenerateResult {
         val endpoint = endpoint / "generate"
         val requestBody = GenerateRequestBody(
@@ -53,6 +55,7 @@ public class FriendlyAuthClient(
             description = description.serializable(),
             interests = interests.serializable(),
             avatar = avatar?.serializable(),
+            socialLink = socialLink?.serializable(),
         )
         val request = httpClient.safeHttpRequest(endpoint.string) {
             method = Post

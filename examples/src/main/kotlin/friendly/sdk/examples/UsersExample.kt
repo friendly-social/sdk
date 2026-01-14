@@ -13,6 +13,7 @@ suspend fun usersExample() {
             Interest.orThrow("phronology"),
         ),
         avatar = null,
+        socialLink = null,
     ).orThrow()
     println("=== Authorization 1 ===")
     println(authorization1)
@@ -28,6 +29,7 @@ suspend fun usersExample() {
             Interest.orThrow("zed"),
         ),
         avatar = null,
+        socialLink = null,
     ).orThrow()
     println("=== Authorization 2 ===")
     println(authorization2)

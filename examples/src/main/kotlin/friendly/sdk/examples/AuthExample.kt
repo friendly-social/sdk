@@ -12,6 +12,7 @@ suspend fun authExample() {
             Interest.orThrow("phronology"),
         ),
         avatar = null,
+        socialLink = null,
     )
     println(authorization)
 }

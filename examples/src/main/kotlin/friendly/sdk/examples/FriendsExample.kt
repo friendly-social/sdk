@@ -13,6 +13,7 @@ suspend fun friendsExample() {
             Interest.orThrow("phronology"),
         ),
         avatar = null,
+        socialLink = null,
     ).orThrow()
     println("=== Authorization 1 ===")
     println(authorization1)
@@ -24,6 +25,7 @@ suspend fun friendsExample() {
             Interest.orThrow("zed"),
         ),
         avatar = null,
+        socialLink = null,
     ).orThrow()
     println("=== Authorization 2 ===")
     println(authorization2)
@@ -35,6 +37,7 @@ suspend fun friendsExample() {
             Interest.orThrow("python3+"),
         ),
         avatar = null,
+        socialLink = null,
     ).orThrow()
     println("=== Authorization 3 ===")
     println(authorization3)
@@ -46,6 +49,7 @@ suspend fun friendsExample() {
             Interest.orThrow("webring"),
         ),
         avatar = null,
+        socialLink = null,
     ).orThrow()
     println("=== Authorization 4 ===")
     println(authorization4)
