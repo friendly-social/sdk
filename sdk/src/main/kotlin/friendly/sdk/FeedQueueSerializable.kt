@@ -11,11 +11,13 @@ public data class FeedQueueSerializable(val entries: List<Entry>) {
 
     @Serializable
     public data class Entry(
+        val isRequest: Boolean,
         val isExtendedNetwork: Boolean,
         val commonFriends: List<UserDetailsSerializable>,
         val details: UserDetailsSerializable,
     ) {
         public fun typed(): FeedQueue.Entry = FeedQueue.Entry(
+            isRequest = isRequest,
             isExtendedNetwork = isExtendedNetwork,
             commonFriends = commonFriends.map { friend -> friend.typed() },
             details = details.typed(),
