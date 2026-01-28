@@ -21,12 +21,12 @@ public data class FriendlyEndpoint(val string: String) {
         @Suppress("ktlint:standard:max-line-length")
         @Deprecated(
             message = "This server is localed in Russia and is not used anymore",
-            replaceWith = ReplaceWith("meetacySenko"),
+            replaceWith = ReplaceWith("production"),
         )
         public fun meetacy(): FriendlyEndpoint =
             FriendlyEndpoint("https://meetacy.app/friendly")
 
-        public fun meetacySenko(): FriendlyEndpoint =
-            FriendlyEndpoint("https://friendly.meetacy.app/")
+        public fun production(): FriendlyEndpoint =
+            FriendlyEndpoint("https://api.getfriend.ly/")
     }
 }

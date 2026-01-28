@@ -15,7 +15,7 @@ val httpClient = HttpClient(CIO) {
         requestTimeoutMillis = 1_000_000
     }
 }
-val client = FriendlyClient.meetacySenko(httpClient = httpClient)
+val client = FriendlyClient.production(httpClient = httpClient)
 
 suspend fun main() {
     // authExample()
