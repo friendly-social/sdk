@@ -61,10 +61,22 @@ public class FriendlyClient(
             return FriendlyClient(endpoint, httpClient)
         }
 
+        @Suppress("DEPRECATION", "ktlint:standard:max-line-length")
+        @Deprecated(
+            message = "This server is localed in Russia and is not used anymore",
+            replaceWith = ReplaceWith("meetacySenko"),
+        )
         public fun meetacy(
             httpClient: HttpClient = HttpClient(CIO),
         ): FriendlyClient {
             val endpoint = FriendlyEndpoint.meetacy()
+            return FriendlyClient(endpoint, httpClient)
+        }
+
+        public fun meetacySenko(
+            httpClient: HttpClient = HttpClient(CIO),
+        ): FriendlyClient {
+            val endpoint = FriendlyEndpoint.meetacySenko()
             return FriendlyClient(endpoint, httpClient)
         }
     }

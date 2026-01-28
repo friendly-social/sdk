@@ -21,5 +21,6 @@ kotlin {
 
 dependencies {
     implementation(projects.sdk)
+    implementation(libs.ktor.client.logging)
     implementation(libs.slf4j.simple)
 }

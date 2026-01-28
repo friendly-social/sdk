@@ -18,7 +18,15 @@ public data class FriendlyEndpoint(val string: String) {
         public fun localhost(port: Int = 8080): FriendlyEndpoint =
             FriendlyEndpoint("http://localhost:$port")
 
+        @Suppress("ktlint:standard:max-line-length")
+        @Deprecated(
+            message = "This server is localed in Russia and is not used anymore",
+            replaceWith = ReplaceWith("meetacySenko"),
+        )
         public fun meetacy(): FriendlyEndpoint =
             FriendlyEndpoint("https://meetacy.app/friendly")
+
+        public fun meetacySenko(): FriendlyEndpoint =
+            FriendlyEndpoint("https://friendly.meetacy.app/")
     }
 }
