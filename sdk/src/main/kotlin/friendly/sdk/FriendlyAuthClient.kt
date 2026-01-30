@@ -80,4 +80,50 @@ public class FriendlyAuthClient(
             accessHash = accessHash.typed(),
             token = token.typed(),
         )
+
+    @Serializable
+    private data class FirebaseRequestBody(
+        val firebaseToken: FirebaseTokenSerializable,
+    )
+
+    @Serializable
+    private data object FirebaseResponseBody
+
+    public sealed interface FirebaseResult {
+        public fun orThrow()
+
+        public data class IOError(val cause: Exception) : FirebaseResult {
+            override fun orThrow(): Nothing = error("$this")
+        }
+        public data object ServerError : FirebaseResult {
+            override fun orThrow(): Nothing = error("$this")
+        }
+        public data object Success : FirebaseResult {
+            override fun orThrow() {}
+        }
+    }
+
+    public suspend fun firebase(
+        authorization: Authorization,
+        firebaseToken: FirebaseToken,
+    ): FirebaseResult {
+        val endpoint = endpoint / "firebase"
+        val requestBody = FirebaseRequestBody(
+            firebaseToken = firebaseToken.serializable(),
+        )
+        val request = httpClient.safeHttpRequest(endpoint.string) {
+            method = Post
+            setBody(requestBody)
+        }
+        val response = when (request) {
+            is IOError -> return FirebaseResult.IOError(request.cause)
+            is ServerError -> return FirebaseResult.ServerError
+            is Success -> request.response
+        }
+        when (response.status) {
+            OK -> response.body<FirebaseRequestBody>()
+            else -> error("Unknown status")
+        }
+        return FirebaseResult.Success
+    }
 }
