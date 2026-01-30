@@ -121,9 +121,43 @@ public class FriendlyAuthClient(
             is Success -> request.response
         }
         when (response.status) {
-            OK -> response.body<FirebaseRequestBody>()
+            OK -> response.body<FirebaseResponseBody>()
             else -> error("Unknown status")
         }
         return FirebaseResult.Success
+    }
+
+    @Serializable
+    private data object LogoutResponseBody
+
+    public sealed interface LogoutResult {
+        public fun orThrow()
+
+        public data class IOError(val cause: Exception) : LogoutResult {
+            override fun orThrow(): Nothing = error("$this")
+        }
+        public data object ServerError : LogoutResult {
+            override fun orThrow(): Nothing = error("$this")
+        }
+        public data object Success : LogoutResult {
+            override fun orThrow() {}
+        }
+    }
+
+    public suspend fun logout(authorization: Authorization): LogoutResult {
+        val endpoint = endpoint / "logout"
+        val request = httpClient.safeHttpRequest(endpoint.string) {
+            method = Post
+        }
+        val response = when (request) {
+            is IOError -> return LogoutResult.IOError(request.cause)
+            is ServerError -> return LogoutResult.ServerError
+            is Success -> request.response
+        }
+        when (response.status) {
+            OK -> response.body<LogoutResponseBody>()
+            else -> error("Unknown status")
+        }
+        return LogoutResult.Success
     }
 }
