@@ -1,6 +1,7 @@
 package friendly.sdk.examples
 
 import friendly.sdk.Interest
+import friendly.sdk.InterestList
 import friendly.sdk.Nickname
 import friendly.sdk.UserDescription
 
@@ -9,7 +10,7 @@ suspend fun friendsExample() {
     val authorization1 = client.auth.generate(
         nickname = Nickname.orThrow("y9san9"),
         description = UserDescription.orThrow("Phronology Evangelist"),
-        interests = listOf(
+        interests = InterestList.orThrow(
             Interest.orThrow("phronology"),
         ),
         avatar = null,
@@ -21,7 +22,7 @@ suspend fun friendsExample() {
     val authorization2 = client.auth.generate(
         nickname = Nickname.orThrow("y9demn"),
         description = UserDescription.orThrow("Zed Enjoyer"),
-        interests = listOf(
+        interests = InterestList.orThrow(
             Interest.orThrow("zed"),
         ),
         avatar = null,
@@ -33,7 +34,7 @@ suspend fun friendsExample() {
     val authorization3 = client.auth.generate(
         nickname = Nickname.orThrow("y9kap"),
         description = UserDescription.orThrow("Senior Python Developer"),
-        interests = listOf(
+        interests = InterestList.orThrow(
             Interest.orThrow("python3+"),
         ),
         avatar = null,
@@ -45,7 +46,7 @@ suspend fun friendsExample() {
     val authorization4 = client.auth.generate(
         nickname = Nickname.orThrow("otomir23"),
         description = UserDescription.orThrow("Webring Master"),
-        interests = listOf(
+        interests = InterestList.orThrow(
             Interest.orThrow("webring"),
         ),
         avatar = null,

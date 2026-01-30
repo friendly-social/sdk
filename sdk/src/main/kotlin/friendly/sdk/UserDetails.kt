@@ -5,7 +5,7 @@ public data class UserDetails(
     val accessHash: UserAccessHash,
     val nickname: Nickname,
     val description: UserDescription,
-    val interests: List<Interest>,
+    val interests: InterestList,
     val avatar: FileDescriptor?,
     val socialLink: SocialLink?,
 ) {

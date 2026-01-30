@@ -15,7 +15,7 @@ public class FriendlyAuthClient(
     private data class GenerateRequestBody(
         val nickname: NicknameSerializable,
         val description: UserDescriptionSerializable,
-        val interests: List<InterestSerializable>,
+        val interests: InterestListSerializable,
         val avatar: FileDescriptorSerializable?,
         val socialLink: SocialLinkSerializable?,
     )
@@ -45,7 +45,7 @@ public class FriendlyAuthClient(
     public suspend fun generate(
         nickname: Nickname,
         description: UserDescription,
-        interests: List<Interest>,
+        interests: InterestList,
         avatar: FileDescriptor?,
         socialLink: SocialLink?,
     ): GenerateResult {
@@ -73,11 +73,6 @@ public class FriendlyAuthClient(
         val authorization = responseBody.toAuthorization()
         return GenerateResult.Success(authorization)
     }
-
-    private fun List<Interest>.serializable(): List<InterestSerializable> =
-        map { interest ->
-            interest.serializable()
-        }
 
     private fun GenerateResponseBody.toAuthorization(): Authorization =
         Authorization(
