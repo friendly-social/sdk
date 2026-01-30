@@ -113,6 +113,7 @@ public class FriendlyAuthClient(
         )
         val request = httpClient.safeHttpRequest(endpoint.string) {
             method = Post
+            authorization(authorization)
             setBody(requestBody)
         }
         val response = when (request) {
@@ -148,6 +149,7 @@ public class FriendlyAuthClient(
         val endpoint = endpoint / "logout"
         val request = httpClient.safeHttpRequest(endpoint.string) {
             method = Post
+            authorization(authorization)
         }
         val response = when (request) {
             is IOError -> return LogoutResult.IOError(request.cause)
