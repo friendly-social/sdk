@@ -3,6 +3,8 @@ package friendly.sdk
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.setBody
+import kotlinx.serialization.Serializable
 
 public class FriendlyUsersClient(
     endpoint: FriendlyEndpoint,
@@ -69,5 +71,91 @@ public class FriendlyUsersClient(
         }
         val details = responseBody.typed()
         return DetailsResult.Success(details)
+    }
+
+    public sealed interface EditResult {
+        public fun orThrow()
+
+        public data class IOError(val cause: Exception) : EditResult {
+            override fun orThrow(): Nothing = error("$this")
+        }
+        public data object ServerError : EditResult {
+            override fun orThrow(): Nothing = error("$this")
+        }
+        public data object Unauthorized : EditResult {
+            override fun orThrow(): Nothing = error("$this")
+        }
+        public data object Success : EditResult {
+            override fun orThrow() {}
+        }
+    }
+
+    public suspend fun edit(
+        authorization: Authorization,
+        nickname: Nickname,
+        description: UserDescription,
+        interests: InterestList,
+        avatar: FileDescriptor?,
+        socialLink: SocialLink?,
+    ): EditResult = edit(
+        authorization = authorization,
+        nickname = Field(nickname),
+        description = Field(description),
+        interests = Field(interests),
+        avatar = Field(avatar),
+        socialLink = Field(socialLink),
+    )
+
+    @Serializable
+    private data class EditRequestBody(
+        val nickname: FieldSerializable<NicknameSerializable>? = null,
+        val description: FieldSerializable<UserDescriptionSerializable>? = null,
+        val interests: FieldSerializable<InterestListSerializable>? = null,
+        val avatar: FieldSerializable<FileDescriptorSerializable?>? = null,
+        val socialLink: FieldSerializable<SocialLinkSerializable?>? = null,
+    )
+
+    public suspend fun edit(
+        authorization: Authorization,
+        nickname: Field<Nickname>? = null,
+        description: Field<UserDescription>? = null,
+        interests: Field<InterestList>? = null,
+        avatar: Field<FileDescriptor?>? = null,
+        socialLink: Field<SocialLink?>? = null,
+    ): EditResult {
+        val endpoint = endpoint / "edit"
+        val requestBody = EditRequestBody(
+            nickname = nickname?.serializable { value ->
+                value.serializable()
+            },
+            description = description?.serializable { value ->
+                value.serializable()
+            },
+            interests = interests?.serializable { value ->
+                value.serializable()
+            },
+            avatar = avatar?.serializable { value ->
+                value?.serializable()
+            },
+            socialLink = socialLink?.serializable { value ->
+                value?.serializable()
+            },
+        )
+        val request = httpClient.safeHttpRequest(endpoint.string) {
+            method = Patch
+            authorization(authorization)
+            setBody(requestBody)
+        }
+        val response = when (request) {
+            is IOError -> return EditResult.IOError(request.cause)
+            is ServerError -> return EditResult.ServerError
+            is Success -> request.response
+        }
+        when (response.status) {
+            Unauthorized -> return EditResult.Unauthorized
+            OK -> {}
+            else -> error("Unknown status code")
+        }
+        return EditResult.Success
     }
 }

@@ -1,8 +1,10 @@
 package friendly.sdk.examples
 
+import friendly.sdk.Field
 import friendly.sdk.Interest
 import friendly.sdk.InterestList
 import friendly.sdk.Nickname
+import friendly.sdk.SocialLink
 import friendly.sdk.UserDescription
 
 suspend fun usersExample() {
@@ -30,7 +32,7 @@ suspend fun usersExample() {
             Interest.orThrow("zed"),
         ),
         avatar = null,
-        socialLink = null,
+        socialLink = SocialLink.orThrow("https://github.com/demndevel"),
     ).orThrow()
     println("=== Authorization 2 ===")
     println(authorization2)
@@ -42,5 +44,24 @@ suspend fun usersExample() {
     ).orThrow()
     println("=== Other User Details ===")
     println(user2Details)
+    println()
+    val editResult = client.users.edit(
+        authorization = authorization2,
+        nickname = null,
+        avatar = null,
+        socialLink = Field(value = null),
+        description = Field(UserDescription.orThrow("Description?")),
+        interests = Field(InterestList.orThrow(Interest.orThrow("dez"))),
+    ).orThrow()
+    println("=== Other User Edit Success ===")
+    println(editResult)
+    println()
+    val user2NewDetails = client.users.details(
+        authorization = authorization1,
+        id = authorization2.id,
+        accessHash = authorization2.accessHash,
+    ).orThrow()
+    println("=== Other User New Details ===")
+    println(user2NewDetails)
     println()
 }
