@@ -70,4 +70,63 @@ public class FriendlyUsersClient(
         val details = responseBody.typed()
         return DetailsResult.Success(details)
     }
+
+    public sealed interface EditResult {
+        public fun orThrow()
+
+        public data class IOError(val cause: Exception) : EditResult {
+            override fun orThrow(): Nothing = error("$this")
+        }
+        public data object ServerError : EditResult {
+            override fun orThrow(): Nothing = error("$this")
+        }
+        public data object Unauthorized : EditResult {
+            override fun orThrow(): Nothing = error("$this")
+        }
+        public data object Success : EditResult {
+            override fun orThrow() {}
+        }
+    }
+
+    public suspend fun edit(
+        authorization: Authorization,
+        nickname: Nickname,
+        description: UserDescription,
+        interests: InterestList,
+        avatar: FileDescriptor?,
+        socialLink: SocialLink?,
+    ): EditResult = edit(
+        authorization = authorization,
+        nickname = Field(nickname),
+        description = Field(description),
+        interests = Field(interests),
+        avatar = Field(avatar),
+        socialLink = Field(socialLink),
+    )
+
+    public suspend fun edit(
+        authorization: Authorization,
+        nickname: Field<Nickname>? = null,
+        description: Field<UserDescription>? = null,
+        interests: Field<InterestList>? = null,
+        avatar: Field<FileDescriptor?>? = null,
+        socialLink: Field<SocialLink?>? = null,
+    ): EditResult {
+        val endpoint = endpoint / "edit"
+        val request = httpClient.safeHttpRequest(endpoint.string) {
+            method = Patch
+            authorization(authorization)
+        }
+        val response = when (request) {
+            is IOError -> return EditResult.IOError(request.cause)
+            is ServerError -> return EditResult.ServerError
+            is Success -> request.response
+        }
+        when (response.status) {
+            Unauthorized -> return EditResult.Unauthorized
+            OK -> {}
+            else -> error("Unknown status code")
+        }
+        return EditResult.Success
+    }
 }
